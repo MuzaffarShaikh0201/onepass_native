@@ -1,37 +1,54 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { StatusBar } from "react-native";
+import { Stack } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Colors } from "@/constants/constants";
+import * as NavigationBar from "expo-navigation-bar";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { useFonts } from "expo-font";
+import Splash from "@/components/Splash";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const RootLayout = () => {
+    const [showSplashScreen, setShowSplashScreen] = useState(true);
+    let [fontsLoaded] = useFonts({
+        "Bebas Neue": require("../assets/fonts/BebasNeue-Regular.ttf"),
+        "Poppins Regular": require("../assets/fonts/Poppins-Regular.ttf"),
+        "Poppins Medium": require("../assets/fonts/Poppins-Medium.ttf"),
+        "Poppins SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
+        "Poppins Bold": require("../assets/fonts/Poppins-Bold.ttf"),
+    });
+    const [theme, setTheme] = useState(Colors.light);
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+    const toggleTheme = () => {
+        setTheme(theme === Colors.light ? Colors.dark : Colors.light);
+    };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+    useEffect(() => {
+        setTimeout(() => setShowSplashScreen(false), 2000);
+    }, []);
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    useEffect(() => {
+        StatusBar.setBarStyle(theme.isDark ? "light-content" : "dark-content");
+        StatusBar.setBackgroundColor(theme.backgroundPrimary);
+        NavigationBar.setButtonStyleAsync(theme.isDark ? "light" : "dark");
+        NavigationBar.setBackgroundColorAsync(theme.backgroundPrimary);
+    }, [theme.isDark]);
+
+    if (!fontsLoaded || showSplashScreen) {
+        return (
+            <SafeAreaView style={{ flex: 1 }}>
+                <Splash />
+            </SafeAreaView>
+        );
     }
-  }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+    return (
+        <ThemeProvider value={{ theme: theme, toggleTheme }}>
+            <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="index" />
+            </Stack>
+        </ThemeProvider>
+    );
+};
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
-  );
-}
+export default RootLayout;
