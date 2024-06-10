@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useTheme from "@/hooks/UseTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Onboarding from "@/components/Onboarding";
+import Onboarding from "@/screens/Onboarding";
 
 const App = () => {
     const [isAppFirstLaunched, setIsAppFirstLaunched] = useState(true);

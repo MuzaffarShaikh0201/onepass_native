@@ -5,8 +5,8 @@ import { Colors } from "@/constants/constants";
 import * as NavigationBar from "expo-navigation-bar";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { useFonts } from "expo-font";
-import Splash from "@/components/Splash";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Splash from "@/screens/Splash";
 
 const RootLayout = () => {
     const [showSplashScreen, setShowSplashScreen] = useState(true);
@@ -24,15 +24,15 @@ const RootLayout = () => {
     };
 
     useEffect(() => {
-        setTimeout(() => setShowSplashScreen(false), 2000);
-    }, []);
-
-    useEffect(() => {
         StatusBar.setBarStyle(theme.isDark ? "light-content" : "dark-content");
         StatusBar.setBackgroundColor(theme.backgroundPrimary);
         NavigationBar.setButtonStyleAsync(theme.isDark ? "light" : "dark");
         NavigationBar.setBackgroundColorAsync(theme.backgroundPrimary);
     }, [theme.isDark]);
+
+    useEffect(() => {
+        setTimeout(() => setShowSplashScreen(false), 2000);
+    }, []);
 
     if (!fontsLoaded || showSplashScreen) {
         return (

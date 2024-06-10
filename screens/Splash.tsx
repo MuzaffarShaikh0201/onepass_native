@@ -3,7 +3,7 @@ import React from "react";
 import { height } from "@/constants/constants";
 import { getFontSize } from "@/constants/utilities";
 import useTheme from "@/hooks/UseTheme";
-import NamedIcon from "./NamedIcon";
+import NamedIcon from "@/components/NamedIcon";
 
 const Splash = () => {
     const { theme } = useTheme();
